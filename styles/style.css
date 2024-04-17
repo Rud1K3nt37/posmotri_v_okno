@@ -54,26 +54,27 @@ ol {
   white-space: nowrap;
 }
 
-/* блок прижат снизу, есть своя ширина и свои отступы ✅ */
+/* блок прижат снизу, есть своя ширина и минимальная высота и свои отступы, корректно работает с прелоадером ошибки ✅ */
 .content {
   display: flex;
   align-items: flex-end;
   inline-size: 1140px;
+  min-block-size: 534px;
   column-gap: 30px;
 }
 
 /* у блока заданы размеры и отступ снизу ✅ */
 .result__video-container {
-  inline-size: 100%;
-  block-size: 100%;
+  inline-size: 711px;
+  block-size: 386px;
   margin-block-end: 16px;
   position: relative;
 }
 
 /* видео растянется на весь родительский блок ✅ */
 .result__video {
-  inline-size: 711px;
-  block-size: 386px;
+  inline-size: 100%;
+  block-size: 100%;
   object-fit: cover;
   object-position: center;
 }
@@ -87,17 +88,20 @@ ol {
   align-items: flex-start;
 }
 
-/* ✅ */
+/* отступ определяет гап у дочерних элементов и элементы прижаты влево ✅ */
 .search-form__fieldset {
   border: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: flex-start;
 }
 
-/* стили и отступ снизу ✅ */
+/* стили и отступ снизу, высоту строки задал в абсолютные единицы, не понимаю как можно меньше 1 поставить и будет несоотвествие с макетом */
 .search-form__fieldset-title {
   font-weight: inherit;
   font-size: inherit;
-  line-height: 1.2;
-  margin-block-end: 5px;
+  line-height: 21.6px;
 }
 
 .search-form__label {
@@ -112,6 +116,7 @@ ol {
   text-decoration: underline;
 }
 
+/* стили, курсор стоит по дефолту, на случай если у пользователя отключены ховер-эффекты ✅ */
 .search-form__textfield {
   background-color: transparent;
   inline-size: 225px;
@@ -122,13 +127,19 @@ ol {
   font-family: inherit;
   font-weight: inherit;
   font-size: 18px;
-  line-height: 1.2;
+  line-height: 21.6px;
   color: inherit;
   appearance: none;
+  cursor: text;
 }
 
 .search-form__textfield::placeholder {
   color: rgb(255, 255, 255, 0.7);
+}
+
+/* ✅ */
+.search-form__textfield:hover {
+  cursor: url(/images/cursor-text.svg), url(/images/cursor-text.png), text;
 }
 
 .search-form__textfield:is(:focus, :focus-visible) {
@@ -138,7 +149,13 @@ ol {
 .search-form__label:has(:focus-visible) {
   outline: 1px solid #fff;
   outline-offset: 1px;
-} 
+}
+
+/* добавил границу при нажатии согласно макету, фокус перестал появлятся при наведении, работает только после нажатия ✅ */
+.search-form__label:has(.search-form__textfield:active) {
+  outline: 1px solid #fff;
+  outline-offset: -1px;
+}
 
 .search-form__checkbox-list {
   inline-size: 212px;
@@ -164,6 +181,7 @@ ol {
   margin: 1px;
 }
 
+/* сбросил уникальные стили кнопок у браузеров, есть дефолт курсора, удалил свойство перенос по пробелам из-за изменения контента будут различные несовпадения, в топку ✅ */
 .button {
   border: 1px solid #fff;
   background-color: transparent;
@@ -171,9 +189,10 @@ ol {
   font-family: inherit;
   font-weight: 700;
   font-size: inherit;
-  line-height: 1.2;
+  line-height: 21.6px;
   text-align: center;
-  white-space: nowrap;
+  appearance: none;
+  cursor: pointer;
 }
 
 :is(.button:hover, .content__card-link:hover) {
@@ -181,24 +200,28 @@ ol {
   text-decoration: underline;
 }
 
-:is(.button:focus, .content__card-link:focus, .content__list:focus) {
+/* удалил состояния фокуса у .content__list, но при табе в браузере мозила появляется у этого элемента стандартный стиль фокуса, 50\50 ситуация, считаю что он интерактивный, можно наверное убрать состояние фокуса и в мазиле не будет появлятся ❓️ PS: интерактивный=кликабельный и он не является(но при табе выбивается из общего стиля), в топку */
+:is(.button:focus, .content__card-link:focus) {
   outline: none;
 }
 
-:is(.button:focus-visible, .content__card-link:focus-visible, .content__list:focus-visible) {
+:is(.button:focus-visible, .content__card-link:focus-visible) {
   outline: 1px solid #fff;
   outline-offset: 1px;
 }
 
-:is(button:active, .content__card-link:active) {
+:is(.button:active, .content__card-link:active) {
   background-color: #545050;
   text-decoration: none;
 }
 
 .search-form__submit-button {
-  padding: 6px 73.5px;
   display: flex;
+  justify-content: center;
+  align-items: center;
   align-self: flex-end;
+  inline-size: 194px;
+  block-size: 34px;
 }
 
 /* максимальная ширина и высота, основная ось стала вертикальной, есть отступ между заголовком и зоной с карточками ✅ */
@@ -211,7 +234,7 @@ ol {
   align-self: flex-start;
 }
 
-/* стили ✅ */
+/* стили, 70.5px/75px=0,94 для относительной высоты строки, но не получится миниум значение 1 принимает, есть em и rem, но расчеты через онлайн калькуляторы не привели к такому же результату с макетом, пока не знаю пусть будет пока абсолютная величина ❓ */
 .title {
   font-family: Oswald, sans-serif;
   font-weight: 700;
@@ -225,10 +248,10 @@ ol {
   color: #545050;
 }
 
-/* ограничил максимальную высоту, контент обрезан и добавлен скролл только по вертикали, спозиционирован относительно и прелоадер занимает весь родительский размер ✅ */
+/* ограничил максимальную высоту, контент обрезан и добавлен скролл, спозиционирован относительно и прелоадер занимает весь родительский размер ✅ */
 .content__list {
   max-block-size: 298px;
-  overflow: hidden auto;
+  overflow: auto;
   position: relative;
   block-size: 100%;
 }
@@ -253,9 +276,20 @@ ol {
   padding: 2px;
 }
 
-/* взял всё в свои руки доступное пространство ✅ */
+/* взял всё в свои руки доступное пространство и сказал своим детям отойти на 6 шагов назад ✅ */
 .content__video-card-description-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   flex-grow: 1;
+}
+
+/* при переполнении текста будет показываться троеточие и перенос слов по пробелам не работает, скролл скрыт, проблема с переполнением решена ✅ */
+.content__video-card-description-container .content__video-card-title, .content__video-card-description {
+  max-inline-size: 200px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 /* стили ✅ */
@@ -263,14 +297,13 @@ ol {
   font-family: Oswald, sans-serif;
   font-weight: 700;
   font-size: 30px;
-  line-height: 1;
+  line-height: 30px;
   text-transform: uppercase;
 }
 
 /* стили ✅ */
 .content__video-card-description {
   line-height: 16.2px;
-  padding-block-start: 6px;
 }
 
 /* задал размеры картинкам и сделал элемент блочным ✅ */
@@ -282,10 +315,14 @@ ol {
   object-position: center;
 }
 
+/* установил отступы, чтобы рамка была видна по всем сторонам ✅ */
 .more-button {
-  padding: 6px 146.5px;
+  inline-size: 399px;
+  block-size: 34px;
+  margin: 2px;
 }
 
-.content__card-link_current ✅ {
+/* 🤗 */
+.content__card-link_current {
   background-color: #545050;
 }
